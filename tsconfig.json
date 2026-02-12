@@ -31,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
 , "src/app/(app)/layout.bak.tsx"  ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "seed.ts"]
 }
