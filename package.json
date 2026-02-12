@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev",
-  "postinstall": "prisma generate",
-  "build": "prisma generate && prisma migrate deploy && next build",
-  "start": "next start",
-  "lint": "next lint",
-  "seed": "tsx prisma/seed.ts"
-},
+    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && prisma migrate deploy && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20.19.33",
+    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.24",
@@ -43,6 +44,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "prisma": { "seed": "tsx scripts/seed.ts" }
-
+  "prisma": {
+    "seed": "tsx scripts/seed.ts"
+  }
 }
