@@ -1,62 +1,18 @@
-"use client";
+import { Suspense } from "react";
+import LoginForm from "./LoginForm";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+export const dynamic = "force-dynamic"; // ✅ กัน prerender/CSR bailout พังตอน build
 
-export default function LoginForm() {
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const preset = params.get("studentCode") ?? "";
-  const [studentCode, setStudentCode] = useState(preset);
-  const [password, setPassword] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setMsg(null);
-
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentCode, password }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      setMsg("เข้าสู่ระบบไม่ได้");
-      return;
-    }
-
-    window.location.href = "/rooms";
-  }
-
+export default function Page() {
   return (
-    <form onSubmit={onSubmit} className="space-y-3">
-      <input
-        value={studentCode}
-        onChange={(e) => setStudentCode(e.target.value)}
-        placeholder="เลขประจำตัว"
-        className="w-full border px-4 py-2 rounded-xl"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="รหัสผ่าน"
-        className="w-full border px-4 py-2 rounded-xl"
-      />
-      {msg && <div className="text-red-500 text-sm">{msg}</div>}
-      <button
-        disabled={loading}
-        className="w-full bg-black text-white py-2 rounded-xl"
-      >
-        {loading ? "กำลังเข้า..." : "เข้าสู่ระบบ"}
-      </button>
-    </form>
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-2xl border p-6 shadow-sm">
+        <h1 className="text-2xl font-semibold">เข้าสู่ระบบ</h1>
+
+        <Suspense fallback={<div className="mt-6 text-sm text-black/60">กำลังโหลด...</div>}>
+          <LoginForm />
+        </Suspense>
+      </div>
+    </div>
   );
 }
