@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model Student {
+  id              String   @id @default(cuid())
+  studentCode     String   @unique
+  prefix          String?
+  firstName       String?
+  lastName        String?
+  roomNumber      Int
+  profileImageUrl String?
+  bio             String?
+  contactFacebook String?
+  contactIg       String?
+  contactLine     String?
+  passwordHash    String?
+  hasPassword     Boolean  @default(false)
+  role            Role     @default(STUDENT)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  friendshipsFrom RoomFriendship[] @relation("fromStudent")
+  friendshipsTo   RoomFriendship[] @relation("toStudent")
+  boardPosts      BoardPost[]
+  boardComments   BoardComment[]
+  inviteCodes     InviteCode[]
+}
+
+model InviteCode {
+  id         String   @id @default(cuid())
+  studentId  String
+  codeHash   String
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model RoomFriendship {
+  id            String   @id @default(cuid())
+  roomNumber    Int
+  fromStudentId String
+  toStudentId   String
+  message       String
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  fromStudent Student @relation("fromStudent", fields: [fromStudentId], references: [id], onDelete: Cascade)
+  toStudent   Student @relation("toStudent", fields: [toStudentId], references: [id], onDelete: Cascade)
+
+  @@index([roomNumber])
+  @@index([toStudentId])
+}
+
+model BoardPost {
+  id        String   @id @default(cuid())
+  authorId  String
+  content   String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   Student       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments BoardComment[]
+}
+
+model BoardComment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  post   BoardPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author Student   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
